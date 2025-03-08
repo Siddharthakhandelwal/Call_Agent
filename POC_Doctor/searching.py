@@ -1,7 +1,7 @@
 import requests
-from send_mail import send_mail
-from groqmodel import groq_suum
-from whatsapp import create_pdf
+from POC_Doctor.send_mail import send_mail
+from POC_Doctor.groqmodel import groq_suum
+from POC_Doctor.whatsapp import create_pdf
 
 def to_check_querr(call_id,mail,number,name):
   auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'

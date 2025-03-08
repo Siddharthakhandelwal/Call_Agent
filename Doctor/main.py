@@ -1,9 +1,9 @@
 import requests
-from searching import to_check_querr
+from Doctor.searching import to_check_querr
 import datetime
 
 
-def poc_doc(name, number,mail):
+def doctor_call(name, number,mail):
     # TODO: Move these to environment variables for better security
     auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
     phone_number_id = "42e8d94a-421e-4143-9173-3b289d22044e"
@@ -70,4 +70,4 @@ def poc_doc(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-poc_doc("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+# poc_doc("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")

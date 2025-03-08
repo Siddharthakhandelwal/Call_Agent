@@ -1,8 +1,7 @@
 import requests
-import numpy as np
-from searching import to_check_querr
+from general.searching import to_check_querr
 import datetime
-import pandas as pd
+
 
 
 def make_vapi_call(name, number,mail):
@@ -78,4 +77,4 @@ def make_vapi_call(name, number,mail):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
-make_vapi_call("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+# make_vapi_call("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")

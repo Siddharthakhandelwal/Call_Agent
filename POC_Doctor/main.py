@@ -1,5 +1,5 @@
 import requests
-from searching import to_check_querr
+from POC_Doctor.searching import to_check_querr
 import datetime
 
 
@@ -119,4 +119,4 @@ def poc_doc(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-poc_doc("Ankit","+917300608902","siddharthakhandelwal9@gmail.com")
+# poc_doc("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")

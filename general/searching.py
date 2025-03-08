@@ -2,11 +2,11 @@ import requests
 from firecrawl import FirecrawlApp
 from groq import Groq
 import tiktoken
-from send_mail import send_mail
-from groqmodel import groq_suum
-from whatsapp import create_pdf,send_image
-from groq_image import groq_image   
-from search_download import main
+from general.send_mail import send_mail
+from general.groqmodel import groq_suum
+from general.whatsapp import create_pdf,send_image
+from general.groq_image import groq_image   
+from general.search_download import main
 
 def groq_trans_querr(trans):
     groq_api="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"
