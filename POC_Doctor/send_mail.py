@@ -1,9 +1,9 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from groqmodel import groq_suum
+
 def send_mail(transcript,recipient_email, subject):
-    body=groq_suum(transcript)
+    body=transcript
     sender_email = "siddharthakhandelwal789@gmail.com"
     sender_password = "wkrb fiqx fpeq ctmc"  # Use an app password if using Gmail
     try:

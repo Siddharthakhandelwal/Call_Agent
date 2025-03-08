@@ -21,7 +21,8 @@ def groq_suum(data,name):
                     Doctor :"",
                     date and time (appointment time form the data):""
                     consulation cost:"", 
-                    and other information'''
+                    and other information
+                    if there is no relevant information then just return "None"'''
                 }
             ],
 

@@ -19,9 +19,11 @@ def to_check_querr(call_id,mail,number,name):
     if trans['status'] =='ended' :
       try:
         transcript= trans['transcript']
-        data=groq_suum(transcript,name) # for now like hospital data only
-        send_mail(data,mail,"Your appointment details")
-        create_pdf(number,data)
+        print("data")
+        dat=groq_suum(transcript,name) 
+        print("mailing")# for now like hospital data only
+        send_mail(dat,mail,"Your appointment details")
+        create_pdf(number,dat)
         return "Success"
       except Exception as e:
          print(f"An error occurred: {e}")
