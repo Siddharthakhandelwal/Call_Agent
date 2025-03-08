@@ -3,8 +3,8 @@ from send_mail import send_mail
 from groqmodel import groq_suum
 from whatsapp import create_pdf
 
-def to_check_querr(name,call_id,mail,number):
-  auth_token = '277f9672-6826-41e2-8774-c193991b06fd'
+def to_check_querr(call_id,mail,number,name):
+  auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',
@@ -19,10 +19,12 @@ def to_check_querr(name,call_id,mail,number):
     if trans['status'] =='ended' :
       try:
         transcript= trans['transcript']
-        data=groq_suum(transcript)
-        send_mail(data,mail,"Summary")
-        create_pdf(number,data)
-        break
+        print("data")
+        dat=groq_suum(transcript,name) 
+        print("mailing")# for now like hospital data only
+        send_mail(dat,mail,"Your appointment details")
+        create_pdf(number,dat)
+        return "Success"
       except Exception as e:
          print(f"An error occurred: {e}")
          return "Error occurred"

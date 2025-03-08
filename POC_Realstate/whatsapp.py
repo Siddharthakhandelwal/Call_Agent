@@ -14,7 +14,8 @@ def create_pdf(number,text, filename="output.pdf"):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.multi_cell(0, 10, text)
+    safe_text = text.encode("latin-1", "ignore").decode("latin-1")
+    pdf.multi_cell(0, 10, safe_text)
     pdf.output(filename)
     send_message(number[1:],"output.pdf")
 def send_image(number):

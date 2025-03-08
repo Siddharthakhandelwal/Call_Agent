@@ -1,5 +1,10 @@
 from groq import Groq
-def groq_suum(data):
+import datetime
+
+def groq_suum(data,name):
+        now = datetime.datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        date = now.strftime("%d-%m-%Y")
         groq_api="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"
         client = Groq(api_key=groq_api)
         chat_completion = client.chat.completions.create(
@@ -10,7 +15,15 @@ def groq_suum(data):
                 },
                 {
                     "role": "user",
-                    "content": f"the transcript is {data} summarize the transcript , so that it describes what conversation was"
+                    "content": f'''Extract the appointment details from the following transcript {data} in a format of
+                    {date} , {current_time}
+                    Name : "{name}",
+                    Doctor :"",
+                    date and time (appointment time form the data):""
+                    consulation cost:"", 
+                    and other information
+                    you can choose some other format if you like .
+                    if there is no relevant information then just return "None"'''
                 }
             ],
 

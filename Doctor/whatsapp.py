@@ -1,6 +1,6 @@
 import subprocess
-from reportlab.pdfgen import canvas
 
+from fpdf import FPDF # type: ignore
 
 def send_message(number,path):
     # Construct the command
@@ -14,12 +14,11 @@ def send_message(number,path):
     else:
         print(f"Error: {result.stderr}")
 def create_pdf(number,text, filename="output.pdf"):
-    # Create a PDF file
-    c = canvas.Canvas(filename)
-    c.setFont("Helvetica", 12)
-    c.drawString(100, 750, text)  
-    c.save()
-    print(f"PDF created successfully: {filename}")
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, text)
+    pdf.output(filename)
     send_message(number[1:],"output.pdf")
 
 

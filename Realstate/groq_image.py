@@ -10,7 +10,7 @@ def groq_image(data):
                 },
                 {
                     "role": "user",
-                    "content": f'''the transcript is {data} , you have the transcript of the call , just return a single prcise line if the user asked for any image or pdf just return that querry in a single in precise manner otherwise just return "None" .'''
+                    "content": f'''the transcript is {data} , you have the transcript of the call , just return a single prcise line if the user asked for any image or pdf related to some field or place just return that querry in a single in precise manner , meaningful such that it can be searched on the internet otherwise just return "None" .'''
                 }
             ],
 

@@ -3,7 +3,7 @@ import os
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
-from POC_Realstate.groq_summarizer import groq_suum
+
 
 
 
@@ -66,6 +66,3 @@ def send_mail(transcript, recipient_email, subject, attachments=None):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-# Example usage:
-# send_mail("Your transcript text here", "recipient@example.com", "Your Subject", 
-#           attachments=["path/to/file1.pdf", "path/to/file2.xlsx"])

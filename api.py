@@ -4,9 +4,9 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import the function from your original file
-from general import main
-from Doctor import main
-from RealState import state
+from general.main import make_vapi_call
+from Doctor.main import doctor_call
+from Realstate.main import state
 
 app = FastAPI(title="VAPI Call API", description="API for making automated voice calls")
 
@@ -23,6 +23,7 @@ app.add_middleware(
 class CallRequest(BaseModel):
     name: str
     number: str
+    mail: Optional[str] = None
 
 
 # Define response models

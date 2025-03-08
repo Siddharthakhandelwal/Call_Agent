@@ -1,5 +1,9 @@
 from groq import Groq
-def groq_suum(data):
+import datetime
+def groq_suum(data,name):
+        now = datetime.datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        date = now.strftime("%d-%m-%Y")
         groq_api="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"
         client = Groq(api_key=groq_api)
         chat_completion = client.chat.completions.create(
@@ -10,7 +14,7 @@ def groq_suum(data):
                 },
                 {
                     "role": "user",
-                    "content": f"the transcript is {data} summarize the transcript and extract the information like booking or something else in a nice format."
+                    "content": f"the transcript is {data} and the client name is {name} , currently the time is {current_time} and the date is {date} summarize the transcript and extract the information like booking or something else in a nice format.Summarzi the transcript in a manner that you are a real state bussiness development agent and u want to send a summary of the meeting to the client"
                 }
             ],
 

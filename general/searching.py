@@ -4,8 +4,10 @@ from groq import Groq
 import tiktoken
 from send_mail import send_mail
 from groqmodel import groq_suum
-from whatsapp import create_pdf
-import excel_data_entry
+from whatsapp import create_pdf,send_image
+from groq_image import groq_image   
+from search_download import main
+
 def groq_trans_querr(trans):
     groq_api="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"
 
@@ -92,7 +94,7 @@ def crawl_web(querry):
 
 
 def to_check_querr(name,call_id,mail,number):
-  auth_token = '277f9672-6826-41e2-8774-c193991b06fd'
+  auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',
@@ -107,17 +109,17 @@ def to_check_querr(name,call_id,mail,number):
     if trans['status'] =='ended' :
       try:
         transcript= trans['transcript']
-        data=groq_suum(transcript) # for now like hospital data only
-        # send_mail(transcript,mail,"Transcript")
+        data=groq_suum(transcript) 
         send_mail(data,mail,"Summary")
-        # create_pdf("+919618821459",data)
+        create_pdf(number,data)
         querry = groq_trans_querr(transcript)
-        excel_handler = excel_data_entry.ExcelDataEntry()
-
-    # Main loop for data entry
-    
-        excel_handler.add_entry(name,number, auth_token, data) 
+        image_querry=groq_image(transcript)
+       
         print(querry)# type: ignore
+        if image_querry != "None":
+          main(image_querry)
+          array=send_image(number)
+          send_mail(data,mail,"Documents that you asked for",array)
         if querry != "None":
             try:
                 print("web scrapping")
@@ -133,3 +135,5 @@ def to_check_querr(name,call_id,mail,number):
       except Exception as e:
          print(f"An error occurred: {e}")
          return "Error occurred"
+
+   
