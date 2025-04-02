@@ -1,12 +1,11 @@
 import requests
-from POC_Realstate.searching import to_check_querr
+from searching import to_check_querr
 import datetime
 def state(name, number,mail):
-
     # TODO: Move these to environment variables for better security
-    auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
-    phone_number_id ="42e8d94a-421e-4143-9173-3b289d22044e"
-    # phone_number_id ="e5782355-626e-4474-8d5d-6983dba93755"
+    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
+    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
+    # phone_number_id ="42e8d94a-421e-4143-9173-3b289d22044e"
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")
     headers = {
@@ -31,6 +30,7 @@ def state(name, number,mail):
                     "role": "system",
                     "content": f'''You are a priya a Bussiness Development Representative from Godrej. you need to follow the following conversation only no need to ask or say anything else other than the following message , here you are playing a role of agent in the following coversation. current time is {current_time} and date is {now}.Understand the following conversation and book the appointment accordingly.₹ ,INR , Rs or RS all these known as rupees and you will also call it rupees.After telling the house starting price don't say Rs, RS intead say rupees.as mentioned earlier on.and also pronounce sq.ft as square feet.pronounce each word and denomination in 100s and thousands or in lakhs accordingly. 
                     keep the pitch , tone same and constant in the whole conversation.pronounce kms as Kilo meters and mins as minutes.Be intutive , act and talk like a human do
+                    Strictly follow the following conversation and book the appointment accordingly.just say the message ehich wrote in  the agent section. 
                     Client: Yes
                     Agent:You had filled out an inquiry form through which I found out that you are
                     interested in our new project located in Noida, Sector 146.
@@ -49,7 +49,7 @@ def state(name, number,mail):
                     Agent: You definitely have a great choice. Now that I have understood your
                     requirement, do you have any questions for me?
                     Client: Is the project ready-to-move or still under construction?
-                    Agent: The project is still under construction and it will be ready by 5th March 2027.
+                    Agent: The project is still under construction and it will be ready by 27th November 2025.
                     Client: Okay, so how is the vicinity?
                     Agent: The highway is 2 Kilo meters away, the airport from the location is hardly 40 mins and
                     the nearest metro station is 5 kms away. Also, On every wednesday there is a weekly
@@ -76,8 +76,8 @@ def state(name, number,mail):
         },
         "voice": {
             "provider": '11labs',
-            "voiceId": "ftDdhfYtmfGP0tFlBYA1",
-            
+            "voiceId": "90ipbRoKi4CpHXvKVtl0",
+            #  90ipbRoKi4CpHXvKVtl0
         },
         "backgroundSound":'office',
         },
@@ -108,3 +108,4 @@ def state(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 # state("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+state("Dhanyashree","+919618821459","karnamd2004@gmail.com")

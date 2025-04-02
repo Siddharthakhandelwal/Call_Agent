@@ -1,12 +1,12 @@
 import requests
-from POC_Doctor.searching import to_check_querr
+from searching import to_check_querr
 import datetime
 
 
 def poc_doc(name, number,mail):
     # TODO: Move these to environment variables for better security
-    auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
-    phone_number_id = "42e8d94a-421e-4143-9173-3b289d22044e"
+    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
+    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
 
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -29,7 +29,7 @@ def poc_doc(name, number,mail):
             "messages": [
                 {
                     "role": "system",
-                    "content": f'''You are simran a front desk in apollo hospital Thubarahalli Banglore. you need to follow the following conversation only no need to ask or say anything else other than the following message , here you are playing a role of agent in the following coversation. current time is {current_time} and date is {now} so book the apoointment accordingly as you can't book apppointment in past.Understand the following conversation and book the appointment accordingly. ₹ ,INR , Rs or RS all these known as rupees and you will also call it rupees .after saying the consultation fees don't say Rs, RS intead say rupees. 
+                    "content": f'''You are simran a front desk in apollo hospital Thubarahalli Banglore. you need to follow the following conversation only no need to ask or say anything else other than the following message ,user's name is {name} here you are playing a role of agent in the following coversation. current time is {current_time} and date is {now} so book the apoointment accordingly as you can't book apppointment in past.Understand the following conversation and book the appointment accordingly. ₹ ,INR , Rs or RS all these known as rupees and you will also call it rupees .after saying the consultation fees don't say Rs, RS intead say rupees. 
                     ask questions one by one after taking the user response don't ask all the questions at once
                     Step 1: Problem Identification
                     Patient: I have caught a cold. So I wanted to see a doctor.
@@ -71,7 +71,7 @@ def poc_doc(name, number,mail):
                     Patient: Tomorrow, at 2:30 PM.
                     Agent: Okay
                     Step 3: Confirming Appointment Details
-                    Agent: So,your appointment with Dr.Swetha.G is scheduled for 5th March at 4:30 PM. The consultation fee is ₹700.
+                    Agent: So,your appointment with Dr.Swetha.G is scheduled for 5th March at 4:30 PM. The consultation fee is Seven hundred rupees.
                     Please bring any past medical records if available. Is this okay?
                     Patient: Yes
                     Step 4: WhatsApp Confirmation
@@ -85,7 +85,7 @@ def poc_doc(name, number,mail):
             ]
         },
         "voice": {
-            "provider": '11labs',
+           "provider": '11labs',
             "voiceId": "ftDdhfYtmfGP0tFlBYA1",
         },
         "backgroundSound":'office',
@@ -119,4 +119,4 @@ def poc_doc(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-# poc_doc("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+poc_doc("siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")

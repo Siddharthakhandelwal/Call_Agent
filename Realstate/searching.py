@@ -1,11 +1,11 @@
 import requests
-from Realstate.send_mail import send_mail
-from Realstate.groq_summarizer import groq_suum
-from Realstate.whatsapp import create_pdf,send_image
-from Realstate.groq_image import groq_image
-from Realstate.search_and_download import main
+from send_mail import send_mail
+from groq_summarizer import groq_suum
+from whatsapp import create_pdf,send_image
+from groq_image import groq_image
+from search_and_download import main
 def to_check_querr(name,call_id,mail,number):
-  auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
+  auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',

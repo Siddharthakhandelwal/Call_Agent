@@ -1,11 +1,11 @@
 import requests
-from Realstate.searching import to_check_querr
+from searching import to_check_querr
 import datetime
 def state(name, number,mail):
 
     # TODO: Move these to environment variables for better security
-    auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
-    phone_number_id ="42e8d94a-421e-4143-9173-3b289d22044e"
+    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
+    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
     # phone_number_id ="e5782355-626e-4474-8d5d-6983dba93755"
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -25,7 +25,7 @@ def state(name, number,mail):
         "model": {
             "provider": "openai",
             "model": "gpt-4",
-            "knowledgeBaseId": "8b5c8484-8aa1-4538-81a9-81572e0a0e2d",
+            "knowledgeBaseId": "40ca8e41-3162-41aa-bff8-a7edebb1f862",
             "messages": [
                 {
                     "role": "system",
@@ -35,7 +35,7 @@ def state(name, number,mail):
         },
         "voice": {
             "provider": '11labs',
-            "voiceId": "ftDdhfYtmfGP0tFlBYA1",
+            "voiceId": "90ipbRoKi4CpHXvKVtl0",
             
         },
         "backgroundSound":'office',
@@ -66,4 +66,4 @@ def state(name, number,mail):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
-# state("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+state("Ankit","+917300608902","siddharthakhandelwal9@gmail.com")

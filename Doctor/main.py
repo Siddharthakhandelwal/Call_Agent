@@ -1,12 +1,12 @@
 import requests
-from Doctor.searching import to_check_querr
+from searching import to_check_querr
 import datetime
 
 
 def doctor_call(name, number,mail):
     # TODO: Move these to environment variables for better security
-    auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
-    phone_number_id = "42e8d94a-421e-4143-9173-3b289d22044e"
+    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
+    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
 
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -26,7 +26,7 @@ def doctor_call(name, number,mail):
         "model": {
             "provider": "openai",
             "model": "gpt-4",
-            "knowledgeBaseId": "ded9fb19-5d4e-41a7-9110-77dd51655d52",
+            "knowledgeBaseId": "339dc0b7-e333-413e-a977-4439e863c043",
             "messages": [
                 {
                     "role": "system",
@@ -47,7 +47,7 @@ def doctor_call(name, number,mail):
             'number': number,
             'name': name 
         },  
-    }   
+    }  
     
 
     try:
@@ -70,4 +70,4 @@ def doctor_call(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-# poc_doc("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
+doctor_call("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")

@@ -3,13 +3,16 @@ from fpdf import FPDF # type: ignore
 import os
 import logging
 
-def send_message(number,path):
-    command = f"npx mudslide@latest send-file {number} {path}"
+def send_message(number):
+    image_array=[]
+    command = f"npx mudslide@latest send-file {number} POC_Realstate\Infinity_Brochure.pdf"
     result = subprocess.run(command, shell=True, text=True, capture_output=True, encoding="utf-8")    
     if result.returncode == 0:
         print(f"Message sent successfully: {result.stdout}")
+        return image_array["Infinity_Brochure.pdf"]
     else:
         print(f"Error: {result.stderr}")
+
 def create_pdf(number,text, filename="output.pdf"):
     pdf = FPDF()
     pdf.add_page()

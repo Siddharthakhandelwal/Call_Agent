@@ -2,11 +2,11 @@ import requests
 from firecrawl import FirecrawlApp
 from groq import Groq
 import tiktoken
-from general.send_mail import send_mail
-from general.groqmodel import groq_suum
-from general.whatsapp import create_pdf,send_image
-from general.groq_image import groq_image   
-from general.search_download import main
+from send_mail import send_mail
+from groqmodel import groq_suum
+from whatsapp import create_pdf,send_image
+from groq_image import groq_image   
+from search_and_download import main
 
 def groq_trans_querr(trans):
     groq_api="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"
@@ -94,7 +94,7 @@ def crawl_web(querry):
 
 
 def to_check_querr(name,call_id,mail,number):
-  auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
+  auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',

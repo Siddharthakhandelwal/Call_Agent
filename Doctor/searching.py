@@ -1,10 +1,10 @@
 import requests
-from Doctor.send_mail import send_mail
-from Doctor.groqmodel import groq_suum
-from Doctor.whatsapp import create_pdf
+from send_mail import send_mail
+from groqmodel import groq_suum
+from whatsapp import create_pdf
 
 def to_check_querr(call_id,mail,number,name):
-  auth_token = '5ce77c0e-2947-47d2-abd9-a1a11656e38d'
+  auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',
