@@ -70,4 +70,3 @@ def doctor_call(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-doctor_call("Siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
