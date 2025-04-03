@@ -77,4 +77,3 @@ def make_vapi_call(name, number,mail):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
-make_vapi_call("Ankit","+919891585155","siddharthakhandelwal9@gmail.com")
