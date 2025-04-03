@@ -119,4 +119,3 @@ def poc_doc(name, number,mail):
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
 
-poc_doc("siddhartha","+917300608902","siddharthakhandelwal9@gmail.com")
