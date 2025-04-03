@@ -66,4 +66,4 @@ def state(name, number,mail):
     except Exception as e:
         print(f"Unexpected error: {e}")
         return {"error": str(e)}
-state("Ankit","+917300608902","siddharthakhandelwal9@gmail.com")
+
