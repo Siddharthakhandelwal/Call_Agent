@@ -1,6 +1,11 @@
 from groq import Groq
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 def groq_image(data):
-        groq_api="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"
+        groq_api=os.getenv("GROQ_API_KEY")
         client = Groq(api_key=groq_api)
         chat_completion = client.chat.completions.create(
             messages=[

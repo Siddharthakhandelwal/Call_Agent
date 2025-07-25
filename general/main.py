@@ -1,17 +1,15 @@
 import requests
-from searching import to_check_querr
+from general.searching import to_check_querr
 import datetime
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+auth_token = os.getenv("AUTH_TOKEN")
+phone_number_id = os.getenv("PHONE_NUMBER_ID")
 
 
 def make_vapi_call(name, number,mail):
-
-
-    # TODO: Move these to environment variables for better security
-    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
-    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
-
-
     now = datetime.datetime.now()
     date =now.strftime("%Y-%m-%d")
     current_time = now.strftime("%H:%M:%S")

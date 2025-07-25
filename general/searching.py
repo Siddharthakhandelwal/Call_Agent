@@ -2,15 +2,19 @@ import requests
 from firecrawl import FirecrawlApp
 from groq import Groq
 import tiktoken
-from send_mail import send_mail
-from groqmodel import groq_suum
-from whatsapp import create_pdf,send_image
-from groq_image import groq_image   
-from search_and_download import main
+from general.send_mail import send_mail
+from general.groqmodel import groq_suum
+from general.whatsapp import create_pdf,send_image
+from general.groq_image import groq_image   
+from general.search_and_download import main
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+groq_api=os.getenv("GROQ_API_KEY")
+firecrawl_api=os.getenv("FIRECRAWL_API_KEY")
 def groq_trans_querr(trans):
-    groq_api="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"
-
+    
     client = Groq(api_key=groq_api)
 
     chat_completion = client.chat.completions.create(
@@ -37,10 +41,9 @@ def groq_trans_querr(trans):
     print(chat_completion.choices[0].message.content)
     return chat_completion.choices[0].message.content
 def crawl_web(querry):
-    app = FirecrawlApp(api_key="fc-cffd0abdf63f46c0b029afd6d25c92bc")
-    groq_api="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"
-    search_engine="AIzaSyDMS2uBldD8l3xhT-B-5Etza0MLP26L3L0"
-    engine_id="a49a4c9e1acce490d"
+    app = FirecrawlApp(api_key=firecrawl_api)
+    search_engine=os.getenv("SEARCH_ENGINE_API_KEY")
+    engine_id=os.getenv("ENGINE_ID")
     tokenizer = tiktoken.get_encoding("cl100k_base") 
     client = Groq(api_key=groq_api)
 
@@ -94,7 +97,7 @@ def crawl_web(querry):
 
 
 def to_check_querr(name,call_id,mail,number):
-  auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
+  auth_token = os.getenv("AUTH_TOKEN")
   url = f"https://api.vapi.ai/call/{call_id}"
   headers = {
       'Authorization': f'Bearer {auth_token}',

@@ -1,11 +1,15 @@
 import requests
-from searching import to_check_querr
+from Realstate.searching import to_check_querr
 import datetime
+from dotenv import load_dotenv
+import os
+load_dotenv()
+auth_token = os.getenv("AUTH_TOKEN")
+phone_number_id = os.getenv("PHONE_NUMBER_ID")
 def state(name, number,mail):
 
     # TODO: Move these to environment variables for better security
-    auth_token = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
-    phone_number_id = "e40be9bc-0eda-468d-b414-7ee56f71529b"
+    
     # phone_number_id ="e5782355-626e-4474-8d5d-6983dba93755"
     now = datetime.datetime.now()
     current_time = now.strftime("%H:%M:%S")

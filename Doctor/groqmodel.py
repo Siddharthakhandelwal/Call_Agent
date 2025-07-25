@@ -1,11 +1,15 @@
 from groq import Groq
 import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+groq_api=os.getenv("GROQ_API_KEY")
 
 def groq_suum(data,name):
         now = datetime.datetime.now()
         current_time = now.strftime("%H:%M:%S")
         date = now.strftime("%d-%m-%Y")
-        groq_api="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"
         client = Groq(api_key=groq_api)
         chat_completion = client.chat.completions.create(
             messages=[

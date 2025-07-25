@@ -1,10 +1,12 @@
-
 fastapi
 uvicorn
 pandas
 requests
 fpdf
-
 pydantic
 js2py
 groq
+python-dotenv
+firecrawl
+tiktoken
+duckduckgo_search
