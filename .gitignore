@@ -3,3 +3,5 @@ general/__pycache__/
 Doctor/__pycache__/
 Realstate/__pycache__/
 __pycache__/
+.env/
+.env
