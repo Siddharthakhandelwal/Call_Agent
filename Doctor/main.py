@@ -3,11 +3,32 @@ from Doctor.searching import to_check_querr
 import datetime
 from dotenv import load_dotenv
 import os
+from send_mail import send_mail
+from supabase_table import insert_dummy_user_record
+import groq_status_remark
+import shutil
 
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
-def doctor_call(name, number,mail):
+knowledge_base_id = os.getenv("HEALTH_TECH")
+
+
+def delete_path(path):
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            os.remove(path)
+            print(f"File deleted: {path}")
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+            print(f"Folder deleted: {path}")
+        else:
+            print(f"Unknown type: {path}")
+    else:
+        print(f"Path not found: {path}")
+
+
+def doctor_call(name, number,mail,user_mail):
     # TODO: Move these to environment variables for better security
 
     now = datetime.datetime.now()
@@ -28,7 +49,7 @@ def doctor_call(name, number,mail):
         "model": {
             "provider": "openai",
             "model": "gpt-4",
-            "knowledgeBaseId": "339dc0b7-e333-413e-a977-4439e863c043",
+            "knowledgeBaseId":knowledge_base_id,
             "messages": [
                 {
                     "role": "system",
@@ -61,14 +82,32 @@ def doctor_call(name, number,mail):
         call_id = response_data.get('id')
         print("got the id")
         print("calling to check querry")
-        querry=to_check_querr(call_id,mail,number,name)
+        summary,transcript = to_check_querr(name, call_id, mail, number)
         print("checked querry")
+        result = groq_status_remark.groq_suum(transcript)
+        if result and isinstance(result, tuple) and len(result) == 2:
+            remark, status = result
+        else:
+            remark, status = "No remark available", "NAN"
         print("calling add data")
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
         return response_data
     except requests.RequestException as e:
         print(f"Request error: {e}")
+        error_message = f"We encountered a network error while processing your request: {str(e)}"
+        send_mail(error_message, mail, "Error Notification")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
-        return {"error": str(e)}
+        error_message = f"We encountered an unexpected error while processing your request: {str(e)}"
+        send_mail(error_message, mail, "Error Notification")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
+    
 

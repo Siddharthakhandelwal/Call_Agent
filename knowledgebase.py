@@ -1,7 +1,7 @@
 import requests
 
-api_key = '0f4fbb74-f6df-4b5f-83dc-6e7f380e6cf0'
-file_id = "9815ca9a-6bc4-4999-8ca5-52aeada91f19"
+api_key = '1b60bee6-8c3c-4715-a7cb-f30c17a67fe4'
+file_id = "51e5093f-81c6-4434-b8b8-6a4c1076e250"
 url = 'https://api.vapi.ai/knowledge-base'
 headers = {
     'Authorization': f'Bearer {api_key}',

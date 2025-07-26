@@ -10,7 +10,7 @@ from Realstate.main import state
 
 app = FastAPI(title="VAPI Call API", description="API for making automated voice calls")
 
-# Add CORS middleware to allow cr oss-orig in requests
+# Add CORS middleware to allow cross-origin requests
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allows all origins
@@ -24,6 +24,7 @@ class CallRequest(BaseModel):
     name: str
     number: str
     mail: Optional[str] = None
+    user_mail: str 
 
 
 # Define response models
@@ -47,7 +48,7 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = make_vapi_call(call_request.name, call_request.number,call_request.mail)
+        result = make_vapi_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
         
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
@@ -72,7 +73,7 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = doctor_call(call_request.name, call_request.number,call_request.mail)
+        result = doctor_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
         
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
@@ -92,7 +93,8 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = state(call_request.name, call_request.number,call_request.mail)
+        result = state(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
+
         
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])

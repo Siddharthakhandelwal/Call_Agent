@@ -3,15 +3,36 @@ from Realstate.searching import to_check_querr
 import datetime
 from dotenv import load_dotenv
 import os
+from send_mail import send_mail
+from supabase_table import insert_dummy_user_record
+import groq_status_remark
+import shutil
+
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
-def state(name, number,mail):
 
+
+def delete_path(path):
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            os.remove(path)
+            print(f"File deleted: {path}")
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+            print(f"Folder deleted: {path}")
+        else:
+            print(f"Unknown type: {path}")
+    else:
+        print(f"Path not found: {path}")
+
+def state(name, number,mail,user_mail):
+    knowledgeBaseId = os.getenv("REAL_STATE")
     # TODO: Move these to environment variables for better security
     
     # phone_number_id ="e5782355-626e-4474-8d5d-6983dba93755"
     now = datetime.datetime.now()
+    date =now.strftime("%Y-%m-%d")
     current_time = now.strftime("%H:%M:%S")
     headers = {
         'Authorization': f'Bearer {auth_token}',
@@ -29,7 +50,7 @@ def state(name, number,mail):
         "model": {
             "provider": "openai",
             "model": "gpt-4",
-            "knowledgeBaseId": "40ca8e41-3162-41aa-bff8-a7edebb1f862",
+            "knowledgeBaseId": knowledgeBaseId,
             "messages": [
                 {
                     "role": "system",
@@ -58,16 +79,43 @@ def state(name, number,mail):
             'https://api.vapi.ai/call/phone', headers=headers, json=data)
         
         response_data = response.json()
-        print(response_data)   
+        # print(response_data)   
         call_id = response_data.get('id')
         print("got the id")
+
+        initial_message = f"Hello {name},\n\nWe have initiated a call to your number {number}. Our assistant will be contacting you shortly.\n\nThank you for your patience."
+        send_mail(initial_message, mail, "Call Notification")
+
         print("calling to check querry")
-        answer = to_check_querr(name ,call_id,mail,number)
-        
+        summary,transcript = to_check_querr(name, call_id, mail, number)
+        print("checked querry")
+
+        result = groq_status_remark.groq_suum(transcript)
+        if result and isinstance(result, tuple) and len(result) == 2:
+            remark, status = result
+        else:
+            remark, status = "No remark available", "NAN"
+        # Send confirmation message via WhatsApp if answer is available
+
+        print("calling add data")
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"Real State")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
+        return response_data
+
     except requests.RequestException as e:
         print(f"Request error: {e}")
+        error_message = f"We encountered a network error while processing your request: {str(e)}"
+        send_mail(error_message, mail, "Error Notification")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","Real State")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
+        error_message = f"We encountered an unexpected error while processing your request: {str(e)}"
+        send_mail(error_message, mail, "Error Notification")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","Real State")
+        delete_path(f"downloads")
+        delete_path("output.pdf")
         return {"error": str(e)}
-
