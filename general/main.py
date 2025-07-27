@@ -7,6 +7,7 @@ from send_mail import send_mail
 from supabase_table import insert_dummy_user_record,upload_audio_to_supabase
 import groq_status_remark
 import shutil
+import uuid
 from call_back_time import call_back
 
 load_dotenv()
@@ -14,7 +15,7 @@ auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
 from gtts import gTTS
 
-def text_to_audio(text, filename="summary_audio.wav", lang="en"):
+def text_to_audio(text, filename, lang="en"):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -25,7 +26,7 @@ def text_to_audio(text, filename="summary_audio.wav", lang="en"):
         return None
     
 
-def download_audio(url, save_as="call_recording.wav"):
+def download_audio(url, save_as):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an error for bad status codes
@@ -136,20 +137,21 @@ def make_vapi_call(name, number,mail,user_mail):
             call_back_time = datetime.fromisoformat(time_str)
         else:
             call_back_time = None
-
+        filename_call = f"{uuid.uuid4()}.wav"
+        filename_summ= f"{uuid.uuid4()}.wav"
         recurl=recording_url(call_id)
         download_audio(recurl)
-        call_url=upload_audio_to_supabase("call_recording.wav")
+        call_url=upload_audio_to_supabase(filename_call)
         text_to_audio(summary)
-        summary_url=upload_audio_to_supabase("summary_audio.wav")
+        summary_url=upload_audio_to_supabase(filename_summ)
 
 
         print("calling add data")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("call_recording.wav")
-        delete_path("summary_audio.wav")
+        delete_path(filename_call)
+        delete_path(filename_summ)
         return response_data
     except requests.RequestException as e:
         print(f"Request error: {e}")
@@ -158,8 +160,8 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("call_recording.wav")
-        delete_path("summary_audio.wav")
+        delete_path(filename_call)
+        delete_path(filename_summ)
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -168,6 +170,6 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("call_recording.wav")
-        delete_path("summary_audio.wav")
+        delete_path(filename_call)
+        delete_path(filename_summ)
         return {"error": str(e)}

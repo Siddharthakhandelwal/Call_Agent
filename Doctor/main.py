@@ -6,15 +6,18 @@ import os
 from send_mail import send_mail
 from supabase_table import insert_dummy_user_record,upload_audio_to_supabase
 import groq_status_remark
+import uuid
+
 import shutil
+from gtts import gTTS
 from call_back_time import call_back
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
 knowledge_base_id = os.getenv("HEALTH_TECH")
-from gtts import gTTS
 
-def text_to_audio(text, filename="summary_audio.wav", lang="en"):
+
+def text_to_audio(text, filename, lang="en"):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -24,7 +27,7 @@ def text_to_audio(text, filename="summary_audio.wav", lang="en"):
         print(f"Error generating audio: {e}")
         return None
 
-def download_audio(url, save_as="call_recording.wav"):
+def download_audio(url, save_as):
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an error for bad status codes
@@ -126,18 +129,20 @@ def doctor_call(name, number,mail,user_mail):
         else:
             call_back_time = None
 
+        filename_call = f"{uuid.uuid4()}.wav"
+        filename_summ= f"{uuid.uuid4()}.wav"
         recurl=recording_url(call_id)
         download_audio(recurl)
-        call_url=upload_audio_to_supabase("call_recording.wav")
+        call_url=upload_audio_to_supabase(filename_call)
         text_to_audio(summary)
-        summary_url=upload_audio_to_supabase("summary_audio.wav")
+        summary_url=upload_audio_to_supabase(filename_summ)
 
         print("calling add data")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
-        delete_path("summary_audio.wav")
+        delete_path(filename_summ)
         delete_path("output.pdf")
-        delete_path("call_recording.wav")
+        delete_path(filename_call)
         return response_data
     except requests.RequestException as e:
         print(f"Request error: {e}")
@@ -146,8 +151,8 @@ def doctor_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.wav")
-        delete_path("call_recording.wav")
+        delete_path(filename_summ)
+        delete_path(filename_call)
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -155,8 +160,8 @@ def doctor_call(name, number,mail,user_mail):
         send_mail(error_message, mail, "Error Notification")
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
         delete_path(f"downloads")
-        delete_path("summary_audio.wav")
-        delete_path("call_recording.wav")
+        delete_path(filename_summ)
+        delete_path(filename_call)
         delete_path("output.pdf")
     
 
