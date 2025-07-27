@@ -12,7 +12,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Use service role key for inserts
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model):
+def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model,call_back_time=None):
     """
     Inserts a dummy record into the user_records table with placeholder data.
     Returns the inserted record or error.
@@ -31,13 +31,14 @@ def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summar
             "status": status,
             "call_status": "done",
             "remarks": remarks,
-            "model":model
+            "model":model,
+            "call_back":call_back_time
         }
 
         response = supabase.table("user_records").insert(dummy_data).execute()
 
         if response.data:
-            print("Dummy record inserted successfully.")
+            print("Record inserted successfully.")
             return response.data[0]
         else:
             print("Insert failed or returned no data.")

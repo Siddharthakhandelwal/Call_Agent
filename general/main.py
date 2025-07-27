@@ -7,6 +7,7 @@ from send_mail import send_mail
 from supabase_table import insert_dummy_user_record
 import groq_status_remark
 import shutil
+from call_back_time import call_back
 
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
@@ -96,9 +97,15 @@ def make_vapi_call(name, number,mail,user_mail):
         else:
             remark, status = "No remark available", "NAN"
         # Send confirmation message via WhatsApp if answer is available
+        print("checking call back time")
+        time_str=call_back(transcript,current_time)
+        if time_str:
+            call_back_time = datetime.fromisoformat(time_str)
+        else:
+            call_back_time = None
 
         print("calling add data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general")
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",call_back_time)
         delete_path(f"downloads")
         delete_path("output.pdf")
         return response_data

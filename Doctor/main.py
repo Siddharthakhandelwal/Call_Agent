@@ -7,7 +7,7 @@ from send_mail import send_mail
 from supabase_table import insert_dummy_user_record
 import groq_status_remark
 import shutil
-
+from call_back_time import call_back
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
@@ -89,8 +89,14 @@ def doctor_call(name, number,mail,user_mail):
             remark, status = result
         else:
             remark, status = "No remark available", "NAN"
+        print("checking call back time")
+        time_str=call_back(transcript,current_time)
+        if time_str:
+            call_back_time = datetime.fromisoformat(time_str)
+        else:
+            call_back_time = None
         print("calling add data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor")
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",call_back_time)
         delete_path(f"downloads")
         delete_path("output.pdf")
         return response_data
@@ -98,7 +104,7 @@ def doctor_call(name, number,mail,user_mail):
         print(f"Request error: {e}")
         error_message = f"We encountered a network error while processing your request: {str(e)}"
         send_mail(error_message, mail, "Error Notification")
-        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
         delete_path(f"downloads")
         delete_path("output.pdf")
         return {"error": f"Network error: {str(e)}"}
@@ -106,7 +112,7 @@ def doctor_call(name, number,mail,user_mail):
         print(f"Unexpected error: {e}")
         error_message = f"We encountered an unexpected error while processing your request: {str(e)}"
         send_mail(error_message, mail, "Error Notification")
-        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor")
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
         delete_path(f"downloads")
         delete_path("output.pdf")
     
