@@ -12,7 +12,26 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")  # Use service role key for inserts
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model,call_back_time=None,recording_url=None):
+def upload_audio_to_supabase(filepath, bucket="audio-files"):
+    filename = os.path.basename(filepath)
+    try:
+        with open(filepath, "rb") as f:
+            response = supabase.storage.from_(bucket).upload(
+                filename,
+                f,
+                file_options={"content-type": "audio/wav"}  # ← change here for .wav
+            )
+            if response.get("error"):
+                print("Upload error:", response["error"])
+                return None
+            print("Upload successful:", filename)
+            return f"{SUPABASE_URL}/storage/v1/object/public/{bucket}/{filename}"
+    except Exception as e:
+        print("Error uploading:", e)
+        return None
+
+
+def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model,call_back_time=None,recording_url=None,summary_audio=None):
     """
     Inserts a dummy record into the user_records table with placeholder data.
     Returns the inserted record or error.
@@ -26,7 +45,7 @@ def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summar
             "transcript": transcript,
             "summary_transcript": summary_transcript,
             "audio_url": recording_url,
-            "summary_audio_url": "https://example.com/summary_audio.mp3",
+            "summary_audio_url": summary_audio,
             "summary_transcript": summary_transcript,
             "status": status,
             "call_status": "done",

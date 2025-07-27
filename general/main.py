@@ -4,7 +4,7 @@ import datetime
 from dotenv import load_dotenv
 import os
 from send_mail import send_mail
-from supabase_table import insert_dummy_user_record
+from supabase_table import insert_dummy_user_record,upload_audio_to_supabase
 import groq_status_remark
 import shutil
 from call_back_time import call_back
@@ -12,6 +12,28 @@ from call_back_time import call_back
 load_dotenv()
 auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
+from gtts import gTTS
+
+def text_to_audio(text, filename="summary_audio.mp3", lang="en"):
+    try:
+        tts = gTTS(text=text, lang=lang)
+        tts.save(filename)
+        print(f"Audio saved as {filename}")
+        return os.path.abspath(filename)
+    except Exception as e:
+        print(f"Error generating audio: {e}")
+        return None
+    
+
+def download_audio(url, save_as="call_recording.wav"):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad status codes
+        with open(save_as, "wb") as f:
+            f.write(response.content)
+        print(f"Downloaded successfully and saved as {save_as}")
+    except Exception as e:
+        print("Error downloading audio:", e)
 
 def recording_url(call_id):
     url = f"https://api.vapi.ai/call/{call_id}"
@@ -116,11 +138,17 @@ def make_vapi_call(name, number,mail,user_mail):
             call_back_time = None
 
         recurl=recording_url(call_id)
+        download_audio(recurl)
+        call_url=upload_audio_to_supabase("call_recording.wav")
+        text_to_audio(summary)
+        summary_url=upload_audio_to_supabase("summary_audio.mp3")
+
 
         print("calling add data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",call_back_time,recurl)
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
+        delete_path("summary_audio.mp3")
         return response_data
     except requests.RequestException as e:
         print(f"Request error: {e}")
@@ -129,6 +157,7 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
+        delete_path("summary_audio.mp3")
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -137,4 +166,5 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
+        delete_path("summary_audio.mp3")
         return {"error": str(e)}
