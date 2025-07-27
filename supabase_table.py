@@ -21,8 +21,8 @@ def upload_audio_to_supabase(filepath, bucket="audio-files"):
                 f,
                 file_options={"content-type": "audio/wav"}  # ← change here for .wav
             )
-            if response.get("error"):
-                print("Upload error:", response["error"])
+            if hasattr(response, "error") and response.error:
+                print("Upload error:", response.error)
                 return None
             print("Upload successful:", filename)
             return f"{SUPABASE_URL}/storage/v1/object/public/{bucket}/{filename}"
