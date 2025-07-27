@@ -140,11 +140,11 @@ def state(name, number,mail,user_mail):
         filename_call = f"{uuid.uuid4()}.wav"
         filename_summ= f"{uuid.uuid4()}.wav"
         recurl=recording_url(call_id)
-        download_audio(recurl)
+        download_audio(recurl,filename_call)
         call_url=upload_audio_to_supabase(filename_call)
-        print("calling add data")
-        text_to_audio(summary)
+        text_to_audio(summary,filename_summ)
         summary_url=upload_audio_to_supabase(filename_summ)
+        print("adding data")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"Real State",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")

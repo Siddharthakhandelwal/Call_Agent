@@ -132,9 +132,9 @@ def doctor_call(name, number,mail,user_mail):
         filename_call = f"{uuid.uuid4()}.wav"
         filename_summ= f"{uuid.uuid4()}.wav"
         recurl=recording_url(call_id)
-        download_audio(recurl)
+        download_audio(recurl,filename_call)
         call_url=upload_audio_to_supabase(filename_call)
-        text_to_audio(summary)
+        text_to_audio(summary,filename_summ)
         summary_url=upload_audio_to_supabase(filename_summ)
 
         print("calling add data")
