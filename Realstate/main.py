@@ -15,7 +15,7 @@ phone_number_id = os.getenv("PHONE_NUMBER_ID")
 
 from gtts import gTTS
 
-def text_to_audio(text, filename="summary_audio.mp3", lang="en"):
+def text_to_audio(text, filename="summary_audio.wav", lang="en"):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -142,11 +142,12 @@ def state(name, number,mail,user_mail):
         call_url=upload_audio_to_supabase("call_recording.wav")
         print("calling add data")
         text_to_audio(summary)
-        summary_url=upload_audio_to_supabase("summary_audio.mp3")
+        summary_url=upload_audio_to_supabase("summary_audio.wav")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"Real State",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.mp3")
+        delete_path("summary_audio.wav")
+        delete_path("call_recording.wav")
         return response_data
 
     except requests.RequestException as e:
@@ -156,7 +157,8 @@ def state(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","Real State")
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.mp3")
+        delete_path("summary_audio.wav")
+        delete_path("call_recording.wav")
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -164,6 +166,7 @@ def state(name, number,mail,user_mail):
         send_mail(error_message, mail, "Error Notification")
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","Real State")
         delete_path(f"downloads")
-        delete_path("summary_audio.mp3")
+        delete_path("summary_audio.wav")
+        delete_path("call_recording.wav")
         delete_path("output.pdf")
         return {"error": str(e)}

@@ -14,7 +14,7 @@ auth_token = os.getenv("AUTH_TOKEN")
 phone_number_id = os.getenv("PHONE_NUMBER_ID")
 from gtts import gTTS
 
-def text_to_audio(text, filename="summary_audio.mp3", lang="en"):
+def text_to_audio(text, filename="summary_audio.wav", lang="en"):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -141,14 +141,15 @@ def make_vapi_call(name, number,mail,user_mail):
         download_audio(recurl)
         call_url=upload_audio_to_supabase("call_recording.wav")
         text_to_audio(summary)
-        summary_url=upload_audio_to_supabase("summary_audio.mp3")
+        summary_url=upload_audio_to_supabase("summary_audio.wav")
 
 
         print("calling add data")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.mp3")
+        delete_path("call_recording.wav")
+        delete_path("summary_audio.wav")
         return response_data
     except requests.RequestException as e:
         print(f"Request error: {e}")
@@ -157,7 +158,8 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.mp3")
+        delete_path("call_recording.wav")
+        delete_path("summary_audio.wav")
         return {"error": f"Network error: {str(e)}"}
     except Exception as e:
         print(f"Unexpected error: {e}")
@@ -166,5 +168,6 @@ def make_vapi_call(name, number,mail,user_mail):
         insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","general")
         delete_path(f"downloads")
         delete_path("output.pdf")
-        delete_path("summary_audio.mp3")
+        delete_path("call_recording.wav")
+        delete_path("summary_audio.wav")
         return {"error": str(e)}
