@@ -14,6 +14,16 @@ phone_number_id = os.getenv("PHONE_NUMBER_ID")
 knowledge_base_id = os.getenv("HEALTH_TECH")
 
 
+def recording_url(call_id):
+    url = f"https://api.vapi.ai/call/{call_id}"
+    headers = {
+        'Authorization': f'Bearer {auth_token}',
+        'Content-Type': 'application/json',
+    }
+    response = requests.get(url, headers=headers).json()
+    print(response.get("recordingUrl"))
+    return response.get("recordingUrl")
+
 def delete_path(path):
     if os.path.exists(path):
         if os.path.isfile(path):
@@ -46,6 +56,7 @@ def doctor_call(name, number,mail,user_mail):
             "language": "en-IN",
             
         },
+        "recordingEnabled": True,
         "model": {
             "provider": "openai",
             "model": "gpt-4",
@@ -78,7 +89,6 @@ def doctor_call(name, number,mail,user_mail):
             'https://api.vapi.ai/call/phone', headers=headers, json=data)
         
         response_data = response.json()
-        print(response_data)   
         call_id = response_data.get('id')
         print("got the id")
         print("calling to check querry")
@@ -95,8 +105,11 @@ def doctor_call(name, number,mail,user_mail):
             call_back_time = datetime.fromisoformat(time_str)
         else:
             call_back_time = None
+
+        recurl=recording_url(call_id)
+
         print("calling add data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",call_back_time)
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",call_back_time,recurl)
         delete_path(f"downloads")
         delete_path("output.pdf")
         return response_data
