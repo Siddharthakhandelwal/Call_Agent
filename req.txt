@@ -19,6 +19,7 @@ fpdf==1.7.2
 frozenlist==1.7.0
 gotrue==2.12.3
 groq==0.30.0
+gtts
 h11==0.16.0
 h2==4.2.0
 hpack==4.1.0
