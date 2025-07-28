@@ -25,6 +25,7 @@ class CallRequest(BaseModel):
     number: str
     mail: Optional[str] = None
     user_mail: str 
+    voice:str
 
 
 # Define response models
@@ -48,7 +49,7 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = make_vapi_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
+        result = make_vapi_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail,call_request.voice)
         
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
@@ -73,7 +74,7 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = doctor_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
+        result = doctor_call(call_request.name, call_request.number,call_request.mail,call_request.user_mail,call_request.voice)
         
         if "error" in result:
             raise HTTPException(status_code=400, detail=result["error"])
@@ -93,7 +94,7 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 
     """
     try:
-        result = state(call_request.name, call_request.number,call_request.mail,call_request.user_mail)
+        result = state(call_request.name, call_request.number,call_request.mail,call_request.user_mail,call_request.voice)
 
         
         if "error" in result:

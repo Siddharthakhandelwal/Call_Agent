@@ -31,7 +31,7 @@ def upload_audio_to_supabase(filepath, bucket="audio-files"):
         return None
 
 
-def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model,call_back_time=None,recording_url=None,summary_audio=None):
+def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summary_transcript,status,remarks,model,voice,call_back_time=None,recording_url=None,summary_audio=None):
     """
     Inserts a dummy record into the user_records table with placeholder data.
     Returns the inserted record or error.
@@ -51,7 +51,8 @@ def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summar
             "call_status": "done",
             "remarks": remarks,
             "model":model,
-            "call_back":call_back_time
+            "call_back":call_back_time,
+            "voice":voice
         }
 
         response = supabase.table("user_records").insert(dummy_data).execute()

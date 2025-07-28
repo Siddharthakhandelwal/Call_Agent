@@ -16,7 +16,7 @@ phone_number_id = os.getenv("PHONE_NUMBER_ID")
 
 from gtts import gTTS
 
-def text_to_audio(text, filename, lang="en"):
+def text_to_audio(text, filename,lang):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -60,7 +60,7 @@ def delete_path(path):
     else:
         print(f"Path not found: {path}")
 
-def state(name, number,mail,user_mail):
+def state(name, number,mail,user_mail,voice):
     knowledgeBaseId = os.getenv("REAL_STATE")
     # TODO: Move these to environment variables for better security
     
@@ -72,14 +72,26 @@ def state(name, number,mail,user_mail):
         'Authorization': f'Bearer {auth_token}',
         'Content-Type': 'application/json',
     }
+    prompt_hindi=f'''आप गोदरेज से बिजनेस डेवलपमेंट प्रतिनिधि प्रिया हैं। वर्तमान समय {current_time} और दिनांक {now} है, उपयोगकर्ता का नाम {name} है। पेशेवर बनें और व्यवहार करें, एक इंसान की तरह बात करें, बातचीत के बीच में कुछ छोटे ब्रेक लें, इसे और अधिक वास्तविक बनाने के लिए 'हम्म', "उम्म" आदि जैसे शब्दों का प्रयोग करें। यह न कहें कि आप एक एआई या कुछ और हैं, एक इंसान की पहचान का उपयोग करें जो मैंने आपको दी है। आपको फेसबुक से लीड मिली है, क्योंकि उपयोगकर्ता ने गोदरेज में रुचि दिखाई है। अपने उत्तर संक्षिप्त और बिंदु तक रखें, ज्यादा बकवास न करें। एक रियल स्टेट एजेंट के रूप में आपको कुछ बटरिंग करनी चाहिए और उपयोगकर्ता को यह महसूस कराना चाहिए कि आप दुनिया में सर्वश्रेष्ठ रियल स्टेट एजेंट हैं और आप उसकी सर्वोत्तम संभव तरीके से मदद कर सकते हैं। रियल स्टेट प्रश्नों के अलावा यदि उपयोगकर्ता आपसे कुछ और पूछता है तो बस कहें कि आप एक रियल स्टेट एजेंट हैं और आप केवल रियल स्टेट प्रश्नों में मदद कर सकते हैं। उपयोगकर्ता को सॉरी या क्षमा याचना न करें यदि आप किसी प्रश्न में उसकी मदद करने में सक्षम नहीं हैं तो बस कहें कि आप एक रियल स्टेट एजेंट हैं और आप केवल रियल स्टेट प्रश्नों में मदद कर सकते हैं। यदि उपयोगकर्ता रियल स्टेट या गोदरेज से संबंधित कुछ प्रश्न पूछता है जिसके लिए इंटरनेट सर्च की आवश्यकता है तो बस कहें कि आप इस कॉल को समाप्त करने के तुरंत बाद वाट्सएप या मेल पर विवरण भेज देंगे। और पूछें कि क्या उपयोगकर्ता के पास वाट्सएप पर वही नंबर है यदि हां तो सामान्य बातचीत जारी रखें यदि नहीं तो वाट्सएप नंबर पूछें। रियल स्टेट या गोदरेज संपत्तियों के अलावा किसी अन्य चीज के लिए .'''
+    
+    prompt_en=f'''You are a priya a Bussiness Development Representative from Godrej.current time is {current_time} and date is {now}name of the user is {name}.Be professional and act , talk like a human , take some small breaks between the conversation , use words like 'hmm',"umm" etc to make it more real. don't say that your are an ai or anything use the identity of a human that i gave you.You got lead from face book , as the user showed intrest in godrej. keep your answers short and to the point dont blabber to much . as a real state agent you should do some buttering and make the user feel that you are the best real state agent in the world and you can help him in the best way possible.Except of real state queries if the user asks you anything else just say that you are a real state agent and you can only help in real state queries.Don't say sorry or appologies to the user if you are not able to help him in any query just say that you are a real state agent and you can only help in real state queries.If user asks some query related to real state or Godrej which requires intenet search then just just say that you will send the details over on the watsapp or mail just after ending this call. and ask if the user has same number on watsapp if yes then continue the normal conversation if not then ask for the watsapp number.for anything otherthan real state or godrej properties just say that the user is talking to business development representative from godrej and you can only help in real state queries.'''
+
+    if voice.strip().lower()=="english" or voice.strip().lower()=="en":
+        voice_id="90ipbRoKi4CpHXvKVtl0"
+        prompt=prompt_en
+    else :
+        voice_id="EXAVITQu4vr4xnSDxMaL"
+        prompt=prompt_hindi
+
 
     data = {
         'assistant': {
-        "firstMessage":": Hello! This is priya speaking from Godrej .Is this a good time to talk?",
+        "firstMessage":"नमस्ते! मैं गोदरेज से प्रिया बोल रही हूँ। क्या बात करने का यह सही समय है?"if voice.strip().lower() != "english" else "Hello! This is priya speaking from Godrej .Is this a good time to talk?",
+
         "transcriber": {
             "provider": "deepgram",
             "model": "nova-2-general",
-            "language": "en-IN",
+            "language": "hi" if voice.strip().lower() != "english" else "en-IN",
         },
         "recordingEnabled": True,
         "model": {
@@ -89,13 +101,13 @@ def state(name, number,mail,user_mail):
             "messages": [
                 {
                     "role": "system",
-                    "content": f'''You are a priya a Bussiness Development Representative from Godrej.current time is {current_time} and date is {now}name of the user is {name}.Be professional and act , talk like a human , take some small breaks between the conversation , use words like 'hmm',"umm" etc to make it more real. don't say that your are an ai or anything use the identity of a human that i gave you.You got lead from face book , as the user showed intrest in godrej. keep your answers short and to the point dont blabber to much . as a real state agent you should do some buttering and make the user feel that you are the best real state agent in the world and you can help him in the best way possible.Except of real state queries if the user asks you anything else just say that you are a real state agent and you can only help in real state queries.Don't say sorry or appologies to the user if you are not able to help him in any query just say that you are a real state agent and you can only help in real state queries.If user asks some query related to real state or Godrej which requires intenet search then just just say that you will send the details over on the watsapp or mail just after ending this call. and ask if the user has same number on watsapp if yes then continue the normal conversation if not then ask for the watsapp number.for anything otherthan real state or godrej properties just say that the user is talking to business development representative from godrej and you can only help in real state queries.''',
+                    "content": prompt,
                 }
             ]
         },
         "voice": {
             "provider": '11labs',
-            "voiceId": "90ipbRoKi4CpHXvKVtl0",
+            "voiceId": voice_id,
             
         },
         "backgroundSound":'office',
@@ -139,13 +151,17 @@ def state(name, number,mail,user_mail):
             call_back_time = None
         filename_call = f"{uuid.uuid4()}.wav"
         filename_summ= f"{uuid.uuid4()}.wav"
+
         recurl=recording_url(call_id)
         download_audio(recurl,filename_call)
+
         call_url=upload_audio_to_supabase(filename_call)
-        text_to_audio(summary,filename_summ)
+        lang="hi" if voice.strip().lower() != "english" else "en"
+        text_to_audio(summary,filename_summ,lang)
         summary_url=upload_audio_to_supabase(filename_summ)
+
         print("adding data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"Real State",call_back_time,call_url,summary_url)
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"Real State",voice,call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
         delete_path(filename_summ)

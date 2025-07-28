@@ -17,7 +17,7 @@ phone_number_id = os.getenv("PHONE_NUMBER_ID")
 knowledge_base_id = os.getenv("HEALTH_TECH")
 
 
-def text_to_audio(text, filename, lang="en"):
+def text_to_audio(text, filename, lang):
     try:
         tts = gTTS(text=text, lang=lang)
         tts.save(filename)
@@ -61,7 +61,7 @@ def delete_path(path):
         print(f"Path not found: {path}")
 
 
-def doctor_call(name, number,mail,user_mail):
+def doctor_call(name, number,mail,user_mail,voice):
     # TODO: Move these to environment variables for better security
 
     now = datetime.datetime.now()
@@ -70,13 +70,24 @@ def doctor_call(name, number,mail,user_mail):
         'Authorization': f'Bearer {auth_token}',
         'Content-Type': 'application/json',
     }
+    prompt_hindi=f'''आप अपोलो अस्पताल में फ्रंट डेस्क पर सिमरन हैं, वर्तमान समय {current_time} और तारीख {now} है। उपयोगकर्ता का नाम {name} है। उपयोगकर्ता की प्रतिक्रिया लेने के बाद एक-एक करके प्रश्न पूछें। सभी प्रश्न एक साथ न पूछें। आपका कार्य उपयोगकर्ता की क्वेरी को स्पष्ट करना, अपॉइंटमेंट बुक करना और चिकित्सा क्षेत्र में सिफारिशें देना है। यदि उपयोगकर्ता चिकित्सा क्षेत्र या अस्पताल के अलावा कोई अन्य प्रश्न पूछता है, तो बस कहें कि आपने अपोलो अस्पताल में कॉल किया था, कृपया नंबर की जांच करें। अनावश्यक रूप से सॉरी न कहें, भले ही यह आपकी गलती हो या कुछ और। सहज उत्तर दें, एक मानव रिसेप्शनिस्ट की तरह व्यवहार करें, यह न कहें कि आप एक nai हैं या डिजिटल दुनिया में रहते हैं। चिकित्सा क्षेत्र या अपोलो अस्पताल के अलावा किसी अन्य चीज़ के बारे में बात न करें। अपने उत्तर संक्षिप्त रखें। '''
+
+    prompt_en=f'''You are simran a front desk at Apollo hospital , currently the time is {current_time} and date is {now}.user's name is {name} .ask questions one by one after taking the user response don't ask all the questions at once Your task is to clear the user query , book appointments and give reccomendations in medical field . If the user asks any question other than the medical field or hospital just say that you called at Apollo hospital please check the number . Don't say redundantly sorry even if it is your mistake or anything else.give intutive answers , act like a human receptionist don't say that you are a n ai or live in digital world . Don't talk about anything other than the medical field or apollo hospital.keep your answers short.Don't say sorry or appolize redundantly or agin and again.  Take help from external context also . '''
+
+    if voice.strip().lower()=="english" or voice.strip().lower()=="en":
+        voice_id="ftDdhfYtmfGP0tFlBYA1"
+        prompt=prompt_en
+    else :
+        voice_id="EXAVITQu4vr4xnSDxMaL"
+        prompt=prompt_hindi
+
     data = {
         'assistant': {
-        "firstMessage":"Hello, This is simran, thank you for calling Apollo Hospitals, Banglore. How can I assist you today?",
+        "firstMessage":f"नमस्ते, मैं सिमरन बोल रही हूँ, अपोलो हॉस्पिटल्स, बैंगलोर में कॉल करने के लिए धन्यवाद। आज मैं आपकी किस प्रकार सहायता कर सकती हूँ?"if voice.strip().lower() != "english" else "Hello, This is simran, thank you for calling Apollo Hospitals, Banglore. How can I assist you today?",
         "transcriber": {
             "provider": "deepgram",
             "model": "nova-2-general",
-            "language": "en-IN",
+            "language": "hi" if voice.strip().lower() != "english" else "en-IN",
             
         },
         "recordingEnabled": True,
@@ -87,14 +98,13 @@ def doctor_call(name, number,mail,user_mail):
             "messages": [
                 {
                     "role": "system",
-                    "content": f'''You are simran a front desk at Apollo hospital , currently the time is {current_time} and date is {now}.user's name is {name} .ask questions one by one after taking the user response don't ask all the questions at once Your task is to clear the user query , book appointments and give reccomendations in medical field . If the user asks any question other than the medical field or hospital just say that you called at Apollo hospital please check the number . Don't say redundantly sorry even if it is your mistake or anything else.give intutive answers , act like a human receptionist don't say that you are a n ai or live in digital world . Don't talk about anything other than the medical field or apollo hospital.keep your answers short.Don't say sorry or appolize redundantly or agin and again.  Take help from external context also . 
-                    '''
+                    "content": prompt
                 }
             ]
         },
         "voice": {
             "provider": '11labs',
-            "voiceId": "ftDdhfYtmfGP0tFlBYA1",
+            "voiceId": voice_id,
         },
         "backgroundSound":'office',
         },
@@ -134,11 +144,12 @@ def doctor_call(name, number,mail,user_mail):
         recurl=recording_url(call_id)
         download_audio(recurl,filename_call)
         call_url=upload_audio_to_supabase(filename_call)
-        text_to_audio(summary,filename_summ)
+        lang="hi" if voice.strip().lower() != "english" else "en"
+        text_to_audio(summary,filename_summ,lang)
         summary_url=upload_audio_to_supabase(filename_summ)
 
         print("calling add data")
-        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",call_back_time,call_url,summary_url)
+        insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"doctor",voice,call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path(filename_summ)
         delete_path("output.pdf")
@@ -148,7 +159,7 @@ def doctor_call(name, number,mail,user_mail):
         print(f"Request error: {e}")
         error_message = f"We encountered a network error while processing your request: {str(e)}"
         send_mail(error_message, mail, "Error Notification")
-        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor","error")
         delete_path(f"downloads")
         delete_path("output.pdf")
         delete_path(filename_summ)
@@ -158,7 +169,7 @@ def doctor_call(name, number,mail,user_mail):
         print(f"Unexpected error: {e}")
         error_message = f"We encountered an unexpected error while processing your request: {str(e)}"
         send_mail(error_message, mail, "Error Notification")
-        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor",call_back_time)
+        insert_dummy_user_record(name,mail,number,user_mail,"Error","Error","Error","Error","doctor","error")
         delete_path(f"downloads")
         delete_path(filename_summ)
         delete_path(filename_call)
