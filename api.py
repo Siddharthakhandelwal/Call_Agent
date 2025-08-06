@@ -28,6 +28,8 @@ class CallRequest(BaseModel):
     mail: Optional[str] = None
     user_mail: str 
     voice:str
+    vertical: Optional[str] = None
+    user_mail: Optional[str] = None
 
 class excelRequest(BaseModel):
     mail:str
