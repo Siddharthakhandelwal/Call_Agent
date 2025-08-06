@@ -161,6 +161,7 @@ def make_vapi_call(name, number,mail,user_mail,voice):
 
         print("calling add data")
         insert_dummy_user_record(name,mail,number,user_mail,transcript,summary,status,remark,"general",voice,call_back_time,call_url,summary_url)
+        print(name,mail,number,user_mail,transcript,summary,status,remark,"general",voice,call_back_time,call_url,summary_url)
         delete_path(f"downloads")
         delete_path("output.pdf")
         delete_path(filename_call)
