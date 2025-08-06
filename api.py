@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
+import os
+from fastapi.responses import FileResponse
 import pandas as pd
 # Import the function from your original file
 from general.main import make_vapi_call
@@ -62,11 +64,6 @@ async def api_make_call(call_request: CallRequest = Body(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@app.get("/health")
-async def health_check():
-    """Health check endpoint for monitoring"""
-    return {"status": "healthy"}
-
 
 @app.post("/doctor", response_model=CallResponse)
 async def api_make_call(call_request: CallRequest = Body(...)):
@@ -112,13 +109,13 @@ async def api_make_call(call_request: CallRequest = Body(...)):
 @app.post("/excel", response_model=CallResponse)
 async def api_make_call(call_request: excelRequest = Body(...)):
     try:
-        data=get_filtered_data(excelRequest.mail,excelRequest.model_name)
+        data=get_filtered_data(call_request.mail,call_request.model_name)
         df = pd.json_normalize(data)
 
         # Save to Excel
+        # Save to Excel in current directory
         filename = "Call History.xlsx"
-        file_path = os.path.join("/tmp", filename)
-
+        file_path = os.path.join(os.getcwd(), filename)
         df.to_excel(file_path, index=False)
 
         # Return the file as response

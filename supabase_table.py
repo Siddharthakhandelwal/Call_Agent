@@ -14,7 +14,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 SELECT_COLUMNS = (
     "name, email, phone_number, transcript, "
-    "summary_transcript(audio_url), "
+    "summary_transcript,audio_url, "
     "summary_audio_url, summary_transcript, status, "
     "remarks, call_back, voice"
 )
@@ -75,26 +75,25 @@ def insert_dummy_user_record(name,email,phone_number,user_mail,transcript,summar
         print(f"Error inserting dummy record: {e}")
         return None
 
+
 def get_filtered_data(user_email, model):
-    # Create Supabase client
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    try:
+        # Perform the filtered query with specific columns
+        response = (
+            supabase
+            .table("user_records")
+            .select(SELECT_COLUMNS)
+            .eq("user_mail", user_email)
+            .eq("model", model)
+            .execute()
+        )
 
-    # Perform the filtered query with specific columns
-    response = (
-        supabase
-        .table("user_records")
-        .select(SELECT_COLUMNS)
-        .eq("user_mail", user_email)
-        .eq("model", model)
-        .execute()
-    )
+        print("Data extraction successful.")
+        return response.data
 
-    # Handle errors
-    if response.error:
-        print("Error:", response.error)
+    except Exception as e:
+        print("Error during data fetch:", e)
         return []
 
-    # Return matching data
-    return response.data
 
 # insert_dummy_user_record("Siddharth","siddharth@example.com","+1234567890","user.siddharth@example.com","This is a dummy transcript.","This is a summary of the dummy transcript.","completed","Test data insert")
